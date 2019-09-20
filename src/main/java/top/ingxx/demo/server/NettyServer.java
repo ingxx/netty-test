@@ -1,4 +1,4 @@
-package top.ingxx.demo;
+package top.ingxx.demo.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelHandler;
@@ -18,17 +18,11 @@ public class NettyServer {
         NioEventLoopGroup worker = new NioEventLoopGroup(); //workerGroup表示处理每一条连接的数据读写的线程组
 
         serverBootstrap
-                .group(boss,worker) //引导类配置两大线程组
+                .group(boss, worker) //引导类配置两大线程组
                 .channel(NioServerSocketChannel.class) //指定io模型
-               .childHandler(new ChannelInitializer<NioSocketChannel>(){ //定义后续每条连接的数据读写，业务处理逻辑
+                .childHandler(new ChannelInitializer<NioSocketChannel>() { //定义后续每条连接的数据读写，业务处理逻辑
                     protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
-                        nioSocketChannel.pipeline().addLast(new StringDecoder());
-                        nioSocketChannel.pipeline().addLast(new SimpleChannelInboundHandler<String>() {
-                            @Override
-                            protected void channelRead0(ChannelHandlerContext ctx, String msg) {
-                                System.out.println(msg);
-                            }
-                        });
+                        nioSocketChannel.pipeline().addLast(new FirstServerHandler());
                     }
                 })
                 .bind(8080);//监听端口
