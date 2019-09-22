@@ -3,15 +3,16 @@ package top.ingxx.demo.protocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import top.ingxx.demo.protocol.request.LoginRequestPacket;
+import top.ingxx.demo.protocol.request.MessageRequestPacket;
 import top.ingxx.demo.protocol.response.LoginResponsePacket;
+import top.ingxx.demo.protocol.response.MessageResponsePacket;
 import top.ingxx.demo.serialize.Serializer;
 import top.ingxx.demo.serialize.impl.JSONSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static top.ingxx.demo.protocol.command.Command.LOGIN_REQUEST;
-import static top.ingxx.demo.protocol.command.Command.LOGIN_RESPONSE;
+import static top.ingxx.demo.protocol.command.Command.*;
 
 public class PacketCodeC {
     //魔数
@@ -27,6 +28,8 @@ public class PacketCodeC {
         packetTypeMap = new HashMap<>();
         packetTypeMap.put(LOGIN_REQUEST, LoginRequestPacket.class);
         packetTypeMap.put(LOGIN_RESPONSE, LoginResponsePacket.class);
+        packetTypeMap.put(MESSAGE_REQUEST, MessageRequestPacket.class);
+        packetTypeMap.put(MESSAGE_RESPONSE, MessageResponsePacket.class);
 
         serializerMap = new HashMap<>();
         Serializer serializer = new JSONSerializer();
@@ -39,6 +42,7 @@ public class PacketCodeC {
         //序列化java对象
         byte[] bytes = Serializer.DEFAULT.serialize(packet);
 
+        //魔数 版本号 序列化算法 指令 数据长度 数据
         //魔数
         byteBuf.writeInt(MAGIC_NUMBER);
         //版本号
