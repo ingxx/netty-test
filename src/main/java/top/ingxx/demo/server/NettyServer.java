@@ -22,7 +22,7 @@ public class NettyServer {
                 .channel(NioServerSocketChannel.class) //指定io模型
                 .childHandler(new ChannelInitializer<NioSocketChannel>() { //定义后续每条连接的数据读写，业务处理逻辑
                     protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
-                        nioSocketChannel.pipeline().addLast(new FirstServerHandler());
+                        nioSocketChannel.pipeline().addLast(new ServerHandler());
                     }
                 });
         bind(serverBootstrap,8080);

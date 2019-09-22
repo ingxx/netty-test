@@ -19,15 +19,10 @@ public class NettyClient {
                 .handler(new ChannelInitializer<Channel>() { //IO处理逻辑
                     @Override
                     protected void initChannel(Channel ch) {
-                        ch.pipeline().addLast(new FirstClientHandler());
+                        ch.pipeline().addLast(new ClientHandler());
                     }
                 });
         //建立连接
         Channel channel = bootstrap.connect("127.0.0.1", 8080).channel();
-
-        while (true) {
-            channel.writeAndFlush(new Date() + ": hello world!");
-            Thread.sleep(2000);
-        }
     }
 }
