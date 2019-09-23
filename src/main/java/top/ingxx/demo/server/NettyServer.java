@@ -9,6 +9,10 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
+import top.ingxx.demo.protocol.codec.PacketDecoder;
+import top.ingxx.demo.protocol.codec.PacketEncoder;
+import top.ingxx.demo.server.handler.LoginRequestHandler;
+import top.ingxx.demo.server.handler.MessageRequestHandler;
 
 public class NettyServer {
     public static void main(String[] args) {
@@ -22,7 +26,10 @@ public class NettyServer {
                 .channel(NioServerSocketChannel.class) //指定io模型
                 .childHandler(new ChannelInitializer<NioSocketChannel>() { //定义后续每条连接的数据读写，业务处理逻辑
                     protected void initChannel(NioSocketChannel nioSocketChannel) throws Exception {
-                        nioSocketChannel.pipeline().addLast(new ServerHandler());
+                        nioSocketChannel.pipeline().addLast(new PacketDecoder());
+                        nioSocketChannel.pipeline().addLast(new LoginRequestHandler());
+                        nioSocketChannel.pipeline().addLast(new MessageRequestHandler());
+                        nioSocketChannel.pipeline().addLast(new PacketEncoder());
                     }
                 });
         bind(serverBootstrap,8080);

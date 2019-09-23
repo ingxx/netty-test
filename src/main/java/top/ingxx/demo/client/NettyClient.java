@@ -7,11 +7,17 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringEncoder;
+import top.ingxx.demo.client.handler.LoginResponseHandler;
+import top.ingxx.demo.client.handler.MessageResponseHandler;
 import top.ingxx.demo.protocol.PacketCodeC;
+import top.ingxx.demo.protocol.codec.PacketDecoder;
+import top.ingxx.demo.protocol.codec.PacketEncoder;
 import top.ingxx.demo.protocol.request.MessageRequestPacket;
 import top.ingxx.demo.util.LoginUtil;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 public class NettyClient {
@@ -24,7 +30,10 @@ public class NettyClient {
                 .handler(new ChannelInitializer<Channel>() { //IO处理逻辑
                     @Override
                     protected void initChannel(Channel ch) {
-                        ch.pipeline().addLast(new ClientHandler());
+                        ch.pipeline().addLast(new PacketDecoder());
+                        ch.pipeline().addLast(new LoginResponseHandler());
+                        ch.pipeline().addLast(new MessageResponseHandler());
+                        ch.pipeline().addLast(new PacketEncoder());
                     }
                 });
         //建立连接
