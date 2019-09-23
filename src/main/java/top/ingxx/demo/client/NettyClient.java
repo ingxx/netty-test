@@ -6,12 +6,14 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import top.ingxx.demo.client.handler.LoginResponseHandler;
 import top.ingxx.demo.client.handler.MessageResponseHandler;
 import top.ingxx.demo.protocol.PacketCodeC;
 import top.ingxx.demo.protocol.codec.PacketDecoder;
 import top.ingxx.demo.protocol.codec.PacketEncoder;
+import top.ingxx.demo.protocol.codec.Spliter;
 import top.ingxx.demo.protocol.request.MessageRequestPacket;
 import top.ingxx.demo.util.LoginUtil;
 
@@ -30,6 +32,7 @@ public class NettyClient {
                 .handler(new ChannelInitializer<Channel>() { //IO处理逻辑
                     @Override
                     protected void initChannel(Channel ch) {
+                        ch.pipeline().addLast(new Spliter());
                         ch.pipeline().addLast(new PacketDecoder());
                         ch.pipeline().addLast(new LoginResponseHandler());
                         ch.pipeline().addLast(new MessageResponseHandler());
@@ -48,11 +51,9 @@ public class NettyClient {
                     System.out.println("输入消息发送至服务端: ");
                     Scanner sc = new Scanner(System.in);
                     String line = sc.nextLine();
-
                     MessageRequestPacket packet = new MessageRequestPacket();
                     packet.setMessage(line);
-                    ByteBuf byteBuf = PacketCodeC.INSTANCE.encode(channel.alloc(), packet);
-                    channel.writeAndFlush(byteBuf);
+                    channel.writeAndFlush(packet);
                 }
             }
         }).start();
