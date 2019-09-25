@@ -4,6 +4,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import top.ingxx.demo.protocol.request.LoginRequestPacket;
 import top.ingxx.demo.protocol.response.LoginResponsePacket;
+import top.ingxx.demo.util.LoginUtil;
 
 import java.util.Date;
 
@@ -18,6 +19,7 @@ public class LoginRequestHandler extends SimpleChannelInboundHandler<LoginReques
         if (valid(loginRequestPacket)) {
             loginResponsePacket.setSuccess(true);
             System.out.println(new Date() + ": 登录成功!");
+            LoginUtil.markAsLogin(ctx.channel());
         } else {
             loginResponsePacket.setReason("账号密码校验失败");
             loginResponsePacket.setSuccess(false);

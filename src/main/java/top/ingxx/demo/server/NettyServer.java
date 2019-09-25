@@ -13,6 +13,7 @@ import io.netty.handler.codec.string.StringDecoder;
 import top.ingxx.demo.protocol.codec.PacketDecoder;
 import top.ingxx.demo.protocol.codec.PacketEncoder;
 import top.ingxx.demo.protocol.codec.Spliter;
+import top.ingxx.demo.server.handler.AuthHandler;
 import top.ingxx.demo.server.handler.LoginRequestHandler;
 import top.ingxx.demo.server.handler.MessageRequestHandler;
 
@@ -31,6 +32,7 @@ public class NettyServer {
                         nioSocketChannel.pipeline().addLast(new Spliter());
                         nioSocketChannel.pipeline().addLast(new PacketDecoder());
                         nioSocketChannel.pipeline().addLast(new LoginRequestHandler());
+                        nioSocketChannel.pipeline().addLast(new AuthHandler());
                         nioSocketChannel.pipeline().addLast(new MessageRequestHandler());
                         nioSocketChannel.pipeline().addLast(new PacketEncoder());
                     }
